@@ -1,0 +1,84 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2512
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\margl1440\margr1440\vieww10800\viewh8400\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 Sub Summary_code()\
+    \
+    For Each ws In Worksheets\
+        'Create title row\
+        ws.Range("i1").Value = "Ticker"\
+        ws.Range("j1").Value = "Yearly Change"\
+        ws.Range("k1").Value = "Percent Change"\
+        ws.Range("l1").Value = "Total Stock Volume"\
+        \
+        'set values for each worksheet\
+        Start = 2\
+        summary_row = 2\
+        \
+        'find last row w/ data\
+        RowCount = Cells(Rows.Count, "A").End(xlUp).Row\
+        \
+        For I = Start To RowCount\
+            \
+            starting_open = ws.Cells(Start, 3).Value\
+            closing = ws.Cells(I, 6).Value\
+            volume = ws.Cells(I, 7).Value\
+            \
+            If ws.Cells(I, 1).Value = ws.Cells(I + 1, 1).Value Then\
+                \
+                Total = Total + volume\
+            \
+            Else\
+                'tally everything up\
+                \
+                Total = Total + volume\
+                Change = (closing - starting_open)\
+                \
+                If starting_open = 0 Then\
+                percentchange = 0\
+                Else\
+                percentchange = Round((Change / starting_open * 100), 2)\
+                End If\
+                \
+                Start = I + 1\
+                \
+                'print everything on the summary row\
+                \
+                ws.Range("I" & summary_row).Value = ws.Cells(I, 1).Value\
+                ws.Range("J" & summary_row).Value = Round(Change, 2)\
+                ws.Range("K" & summary_row).Value = "%" & percentchange\
+                ws.Range("L" & summary_row).Value = Total\
+                \
+                'reset everything for the next symbol\
+                Total = 0\
+                Change = 0\
+                summary_row = summary_row + 1\
+            \
+            End If\
+        \
+        Next I\
+    \
+    Next ws\
+                \
+End Sub\
+Sub Color_code1()\
+    \
+For Each ws In Worksheets\
+\
+    lastrow = Cells(Rows.Count, "I").End(xlUp).Row\
+    \
+    For I = 2 To lastrow\
+        For j = 10 To 11\
+            If ws.Cells(I, j).Value < 0 Then\
+                ws.Cells(I, j).Interior.ColorIndex = 3\
+            Else\
+                ws.Cells(I, j).Interior.ColorIndex = 4\
+            End If\
+        Next j\
+    Next I\
+Next ws\
+\
+End Sub}
